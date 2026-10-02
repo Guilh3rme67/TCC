@@ -10,10 +10,10 @@ class Ocorrencia {
   // Tipo da ocorrência
   final String type;
 
-  // Descrição informada pelo usuário
+  // Descrição da ocorrência
   final String description;
 
-  // Data e hora em que a ocorrência foi criada
+  // Data e hora da criação
   final DateTime dataHora;
 
   Ocorrencia({
@@ -23,5 +23,30 @@ class Ocorrencia {
     required this.description,
     required this.dataHora,
   });
-}
 
+  // Converte a ocorrência para um formato que pode ser salvo em JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'latitude': position.latitude,
+      'longitude': position.longitude,
+      'type': type,
+      'description': description,
+      'dataHora': dataHora.toIso8601String(),
+    };
+  }
+
+  // Cria uma ocorrência a partir dos dados do JSON
+  factory Ocorrencia.fromJson(Map<String, dynamic> json) {
+    return Ocorrencia(
+      id: json['id'],
+      position: LatLng(
+        json['latitude'],
+        json['longitude'],
+      ),
+      type: json['type'],
+      description: json['description'],
+      dataHora: DateTime.parse(json['dataHora']),
+    );
+  }
+}

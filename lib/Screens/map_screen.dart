@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:map_project/Screens/ocorrencia_screen.dart';
+import 'package:map_project/Services/ocorrencia_storage.dart';
 import 'package:map_project/Widgets/Ocorrencia.dart';
+import 'package:geocoding/geocoding.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -13,8 +15,13 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  // Lista que armazena todas as ocorrências criadas
+  // Lista que armazena todas as ocorrências
   final List<Ocorrencia> ocorrencias = [];
+
+  // Responsável por salvar e carregar as ocorrências
+  final OcorrenciaStorage storage = OcorrenciaStorage();
+
+  final Geocoding geocoding = Geocoding();
 
   // Indica se o usuário está criando uma nova ocorrência
   bool criandoOcorrencia = false;
@@ -22,13 +29,66 @@ class _MapScreenState extends State<MapScreen> {
   // Armazena temporariamente a localização escolhida
   LatLng? novaLocalizacao;
 
-  IconData obterIconeOcorrencia(String tipo) { 
-    switch (tipo) { 
-      case 'Acidente': return Icons.car_crash; 
-      case 'Via obstruída': return Icons.block; 
-      case 'Transporte público inoperante': return Icons.directions_bus; 
-      default: return Icons.location_on; 
+  Future<String> obterEndereco(LatLng position) async {
+    try {
+      final placemarks = await geocoding.placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+
+      if (placemarks.isEmpty) {
+        return 'Endereço não encontrado';
+      }
+
+      final endereco = placemarks.first;
+
+      return [
+        endereco.street,
+        endereco.subThoroughfare,
+        endereco.subLocality,
+        endereco.locality,
+        endereco.administrativeArea,
+      ].whereType<String>().where((item) => item.isNotEmpty).join(', ');
+    } catch (e) {
+      return 'Não foi possível obter o endereço';
     }
+  }
+
+
+
+
+  IconData obterIconeOcorrencia(String tipo) {
+    switch (tipo) {
+      case 'Acidente':
+        return Icons.car_crash;
+      case 'Via obstruída':
+        return Icons.block;
+      case 'Transporte público inoperante':
+        return Icons.directions_bus;
+      default:
+        return Icons.location_on;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Carrega as ocorrências salvas ao abrir o mapa
+    carregarOcorrencias();
+  }
+
+  Future<void> carregarOcorrencias() async {
+    final ocorrenciasSalvas =
+        await storage.carregarOcorrencias();
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      ocorrencias.addAll(ocorrenciasSalvas);
+    });
   }
 
   @override
@@ -72,6 +132,10 @@ class _MapScreenState extends State<MapScreen> {
 
             // Sai do modo de criação depois que
             // o formulário for fechado
+            if (!mounted) {
+              return;
+            }
+
             setState(() {
               criandoOcorrencia = false;
               novaLocalizacao = null;
@@ -80,22 +144,31 @@ class _MapScreenState extends State<MapScreen> {
             // Se o usuário confirmou a ocorrência,
             // o resultado não será nulo
             if (resultado != null) {
+              final novaOcorrencia = Ocorrencia(
+                // Gera um identificador para a ocorrência
+                id: DateTime.now()
+                    .millisecondsSinceEpoch
+                    .toString(),
+
+                // Localização escolhida no mapa
+                position: point,
+
+                // Tipo informado no formulário
+                type: resultado['type'],
+
+                // Descrição informada no formulário
+                description: resultado['description'],
+
+                // Data e hora atual
+                dataHora: DateTime.now(),
+              );
+
               setState(() {
-                ocorrencias.add( 
-                  Ocorrencia( 
-                    // Gera um identificador único para a ocorrência 
-                    id: DateTime.now().millisecondsSinceEpoch.toString(), 
-                    // Localização escolhida no mapa 
-                    position: point, 
-                    // Tipo informado no formulário 
-                    type: resultado['type'], 
-                    // Descrição informada no formulário 
-                    description: resultado['description'], 
-                    // Data e hora atual 
-                    dataHora: DateTime.now(), 
-                  ),
-                );
+                ocorrencias.add(novaOcorrencia);
               });
+
+              // Salva todas as ocorrências no arquivo JSON
+              await storage.salvarOcorrencias(ocorrencias);
             }
           },
         ),
@@ -117,31 +190,31 @@ class _MapScreenState extends State<MapScreen> {
             ),
           ),
 
-          // Camada responsável pelos marcadores
+  
+
           MarkerLayer(
             markers: ocorrencias.map((ocorrencia) {
               return Marker(
                 point: ocorrencia.position,
-
                 width: 50,
                 height: 50,
-
                 child: IconButton(
-                  onPressed: () {
-                    // Abre os detalhes da ocorrência
+                  onPressed: () async {
+                    final endereco = await obterEndereco(
+                      ocorrencia.position,
+                    );
+
+                    if (!context.mounted) return;
+
                     showModalBottomSheet(
                       context: context,
                       builder: (context) {
                         return Padding(
                           padding: const EdgeInsets.all(16),
-
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment:
-                                CrossAxisAlignment.start,
-
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Tipo da ocorrência
                               Text(
                                 ocorrencia.type,
                                 style: const TextStyle(
@@ -152,7 +225,6 @@ class _MapScreenState extends State<MapScreen> {
 
                               const SizedBox(height: 12),
 
-                              // Título da descrição
                               const Text(
                                 'Descrição:',
                                 style: TextStyle(
@@ -163,7 +235,6 @@ class _MapScreenState extends State<MapScreen> {
 
                               const SizedBox(height: 5),
 
-                              // Descrição da ocorrência
                               Text(
                                 ocorrencia.description,
                                 style: const TextStyle(
@@ -173,31 +244,32 @@ class _MapScreenState extends State<MapScreen> {
 
                               const SizedBox(height: 12),
 
-                              // Coordenadas
-                              Text(
-                                'Latitude: '
-                                '${ocorrencia.position.latitude}',
+                              const Text(
+                                'Localização:',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
 
+                              const SizedBox(height: 5),
+
                               Text(
-                                'Longitude: '
-                                '${ocorrencia.position.longitude}',
+                                endereco,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                ),
                               ),
 
                               const SizedBox(height: 20),
 
-                              // Botão para fechar
                               SizedBox(
                                 width: double.infinity,
-
                                 child: ElevatedButton(
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
-
-                                  child: const Text(
-                                    'Fechar',
-                                  ),
+                                  child: const Text('Fechar'),
                                 ),
                               ),
                             ],
@@ -206,8 +278,6 @@ class _MapScreenState extends State<MapScreen> {
                       },
                     );
                   },
-
-                  // Ícone do marcador
                   icon: Icon(
                     obterIconeOcorrencia(ocorrencia.type),
                     color: Colors.red,
@@ -218,7 +288,9 @@ class _MapScreenState extends State<MapScreen> {
             }).toList(),
           ),
 
-          // Créditos do OpenStreetMap
+
+
+          
           RichAttributionWidget(
             attributions: [
               TextSourceAttribution(
@@ -245,4 +317,3 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 }
-

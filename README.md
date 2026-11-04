@@ -117,7 +117,7 @@ Este projeto está sendo desenvolvido como Trabalho de Conclusão de Curso (TCC)
 
 ## Autor
 
-**Guilherme**
+**Guilherme Oliveira Freire**
 
 GitHub: [@Guilh3rme67](https://github.com/Guilh3rme67)
 

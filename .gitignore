@@ -32,7 +32,9 @@ migrate_working_dir/
 .pub/
 /build/
 /coverage/
-
+# Flutter / Android - arquivos gerados
+**/build/
+.gradle/
 # Symbolication related
 app.*.symbols
 

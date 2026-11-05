@@ -1,267 +1,169 @@
 # Sistema Colaborativo de Identificação e Notificação de Ocorrências no Transporte Público
 
-![Status](https://img.shields.io/badge/status-Prot%C3%B3tipo-orange)
-![Flutter](https://img.shields.io/badge/Flutter-Dart-blue)
-![Mapas](https://img.shields.io/badge/Mapas-OpenStreetMap-green)
-![License](https://img.shields.io/badge/license-A%20definir-lightgrey)
+## Sobre o projeto
 
-## 1. Apresentação do projeto
+Este projeto apresenta o desenvolvimento de um protótipo de uma ferramenta colaborativa para registro, consulta e visualização de ocorrências que impactam o transporte público na região de Campo Limpo Paulista – SP.
 
-Este projeto é desenvolvido como Trabalho de Conclusão de Curso (TCC) e propõe a criação de um sistema colaborativo em tempo real para identificação, registro e notificação de ocorrências relacionadas ao transporte público.
+A proposta é permitir que usuários registrem situações como acidentes, obstruções de vias e interrupções de serviço, contribuindo para o compartilhamento de informações e o planejamento dos deslocamentos.
 
-A solução tem como finalidade permitir que passageiros compartilhem informações sobre situações que possam impactar seus deslocamentos, possibilitando que outros usuários tenham acesso a informações relevantes sobre as condições do transporte público.
+O projeto faz parte do Trabalho de Conclusão de Curso (TCC) do Centro Universitário Campo Limpo Paulista (UNIFACCAMP).
 
-A proposta utiliza tecnologias de desenvolvimento mobile, geolocalização e mapas digitais, buscando proporcionar uma experiência colaborativa, acessível e intuitiva.
+## Objetivo
 
-O aplicativo encontra-se atualmente na fase de protótipo.
+Desenvolver uma ferramenta baseada em informações geográficas (GIS), com mapa interativo, que permita registrar e consultar ocorrências relacionadas ao transporte público.
 
-## 2. Problema e justificativa
+A solução busca oferecer uma representação visual das ocorrências, facilitando a identificação de situações que possam afetar os deslocamentos dos usuários.
 
-A falta de informações atualizadas sobre ocorrências no transporte público pode dificultar o planejamento dos deslocamentos dos passageiros.
+## Tecnologias utilizadas
 
-Situações como atrasos, interrupções, congestionamentos, problemas operacionais e outras ocorrências podem impactar diretamente a mobilidade urbana.
-
-Nesse contexto, um sistema colaborativo pode contribuir para o compartilhamento de informações entre passageiros, permitindo que os próprios usuários participem da identificação e divulgação de ocorrências.
-
-## 3. Objetivos
-
-### Objetivo geral
-
-Desenvolver um protótipo de aplicação mobile colaborativa para identificação, registro e notificação de ocorrências no transporte público, utilizando recursos de geolocalização e mapas digitais.
-
-### Objetivos específicos
-
-- Permitir o registro colaborativo de ocorrências.
-- Possibilitar a identificação geográfica das ocorrências.
-- Disponibilizar informações para consulta pelos usuários.
-- Utilizar mapas digitais para contextualizar a localização dos registros.
-- Propor mecanismos de compartilhamento de informações.
-- Avaliar a usabilidade e a viabilidade técnica da solução.
-
-## 4. Tecnologias utilizadas
-
-| Tecnologia | Aplicação no projeto |
+| Tecnologia | Aplicação |
 |---|---|
-| Flutter | Desenvolvimento multiplataforma |
+| Flutter | Desenvolvimento da aplicação |
 | Dart | Linguagem de programação |
-| OpenStreetMap | Base cartográfica e representação geográfica |
-| Git | Controle de versão |
-| GitHub | Hospedagem do código-fonte |
-| Backend | Tecnologia ainda não definida |
+| flutter_map | Exibição e interação com mapas |
+| OpenStreetMap | Fonte dos dados cartográficos |
+| JSON | Armazenamento local das ocorrências |
+| Geocoding | Conversão de coordenadas em informações de endereço |
+| Path Provider | Apoio ao acesso ao armazenamento local |
+| Git e GitHub | Controle de versão e hospedagem do código |
 
-### 4.1. Flutter
+## Funcionalidades implementadas no protótipo
 
-Framework utilizado para desenvolvimento da aplicação, permitindo a criação de interfaces multiplataforma a partir de uma única base de código.
+- Exibição de mapa interativo.
+- Seleção de localização no mapa.
+- Cadastro de ocorrências georreferenciadas.
+- Informação do tipo de ocorrência.
+- Inclusão da descrição do evento.
+- Exibição das ocorrências por marcadores no mapa.
+- Consulta das informações das ocorrências cadastradas.
+- Persistência local dos registros em formato JSON.
+- Recuperação dos registros após o encerramento da aplicação.
+- Geocodificação reversa para identificação de endereços a partir das coordenadas geográficas.
 
-### 4.2. Dart
+## Funcionalidades previstas para evolução
 
-Linguagem de programação utilizada no desenvolvimento das funcionalidades e componentes da aplicação Flutter.
+As funcionalidades abaixo fazem parte da proposta de evolução do sistema, mas não devem ser consideradas implementadas nesta versão do protótipo:
 
-### 4.3. OpenStreetMap
+- Compartilhamento de ocorrências entre diferentes usuários.
+- Armazenamento centralizado das informações.
+- Notificações em tempo real para usuários próximos.
+- Atualização das ocorrências compartilhadas.
+- Evolução dos mecanismos de validação e avaliação das informações registradas.
 
-Projeto de mapeamento colaborativo utilizado como referência cartográfica para a representação de informações geográficas.
+## Funcionamento geral
 
-A integração com os mapas deverá permitir contextualizar visualmente a localização das ocorrências.
+O fluxo básico do protótipo contempla:
 
-A implementação dos serviços de geolocalização, marcadores e interação com o mapa será documentada conforme sua evolução.
+1. O usuário acessa a aplicação.
+2. Visualiza o mapa interativo.
+3. Seleciona a opção para adicionar uma ocorrência.
+4. Define a localização no mapa.
+5. Informa o tipo e a descrição da ocorrência.
+6. Confirma o cadastro.
+7. A ocorrência é registrada localmente.
+8. O marcador correspondente é apresentado no mapa.
+9. O usuário pode consultar as informações cadastradas.
 
-### 4.4. Backend e persistência
+## Armazenamento e arquitetura
 
-A tecnologia de backend ainda não foi definida.
+Nesta etapa, o protótipo utiliza armazenamento local em formato JSON para persistir as ocorrências cadastradas.
 
-A arquitetura deverá considerar futuramente mecanismos para:
+A arquitetura de backend ainda não foi definida. A implementação de um serviço centralizado será avaliada em etapas futuras, especialmente para viabilizar o compartilhamento de informações entre diferentes usuários e o envio de notificações.
 
-- Persistência dos registros de ocorrências.
-- Compartilhamento de informações entre usuários.
-- Gerenciamento dos dados da aplicação.
-- Comunicação entre dispositivos.
-- Atualização das informações.
-- Autenticação e controle de acesso, caso aplicáveis.
+## Como executar o projeto
 
-## 5. Funcionalidades previstas
-
-As funcionalidades estão organizadas conforme a proposta do sistema e deverão ser classificadas como implementadas, em desenvolvimento ou planejadas durante a evolução do protótipo.
-
-| Funcionalidade | Descrição |
-|---|---|
-| Registro de ocorrências | Permitir o cadastro de situações identificadas pelos usuários |
-| Geolocalização | Identificar a localização associada à ocorrência |
-| Visualização em mapa | Representar geograficamente as ocorrências |
-| Consulta de ocorrências | Permitir a visualização dos registros disponíveis |
-| Compartilhamento colaborativo | Disponibilizar informações compartilhadas pelos usuários |
-| Notificações | Informar os usuários sobre ocorrências relevantes |
-
-**Observação:** a descrição representa o escopo funcional proposto, não uma confirmação de que todos os recursos já estão implementados.
-
-## 6. Arquitetura proposta
-
-A arquitetura lógica prevista para a solução contempla os seguintes componentes:
-
-```text
-+-----------------------------+
-|          USUÁRIO             |
-|                             |
-|      Aplicativo Mobile      |
-+--------------+--------------+
-               |
-               v
-+-----------------------------+
-|       APLICAÇÃO FLUTTER     |
-|                             |
-|  - Interface                |
-|  - Registro de ocorrências  |
-|  - Consulta                 |
-|  - Geolocalização           |
-+--------------+--------------+
-               |
-       +-------+-------+
-       |               |
-       v               v
-+-------------+  +----------------+
-| OpenStreet  |  | Backend futuro |
-| Map         |  | A definir      |
-|             |  |                |
-| Mapas       |  | Persistência   |
-| Cartografia |  | Comunicação    |
-+-------------+  | Compartilhamento|
-                 +----------------+
-```
-
-*Diagrama conceitual. A comunicação com o backend representa uma arquitetura futura, ainda não definida.*
-
-## 7. Estrutura do projeto
-
-Estrutura de referência do projeto Flutter:
-
-```text
-TCC/
-│
-├── android/             # Configurações Android
-├── ios/                 # Configurações iOS
-├── lib/                 # Código-fonte Dart
-├── web/                 # Configurações Web
-├── windows/             # Configurações Windows
-├── linux/               # Configurações Linux
-├── macos/               # Configurações macOS
-│
-├── test/                # Testes automatizados
-├── assets/              # Recursos estáticos, se utilizados
-│
-├── pubspec.yaml         # Dependências e configurações
-├── pubspec.lock         # Versões das dependências
-└── README.md            # Documentação
-```
-
-A estrutura interna de `lib/` deverá ser documentada conforme a organização efetivamente adotada no código-fonte.
-
-## 8. Requisitos para execução
-
-Para executar o projeto, recomenda-se possuir:
+### Pré-requisitos
 
 - Flutter SDK instalado.
 - Dart SDK.
 - Android Studio ou Visual Studio Code.
 - Git instalado.
-- Emulador Android ou dispositivo físico compatível.
+- Emulador Android ou dispositivo compatível.
 
-## 9. Instalação e execução
-
-### 9.1. Clonar o repositório
+### Clonar o repositório
 
 ```bash
 git clone https://github.com/Guilh3rme67/TCC.git
 ```
 
-### 9.2. Acessar o diretório
+### Acessar a pasta do projeto
 
 ```bash
 cd TCC
 ```
 
-### 9.3. Verificar o ambiente
+### Verificar o ambiente Flutter
 
 ```bash
 flutter doctor
 ```
 
-### 9.4. Instalar dependências
+### Instalar as dependências
 
 ```bash
 flutter pub get
 ```
 
-### 9.5. Executar o aplicativo
+### Executar a aplicação
 
 ```bash
 flutter run
 ```
 
-A execução dependerá da configuração do ambiente e das dependências necessárias ao projeto.
+## Estrutura do projeto
 
-## 10. Controle de versão
+A organização segue a estrutura padrão de uma aplicação Flutter. Os arquivos e diretórios específicos devem ser consultados diretamente no repositório.
 
-O projeto utiliza Git para gerenciamento de versões e GitHub para hospedagem do código-fonte.
-
-Repositório oficial:
-
-https://github.com/Guilh3rme67/TCC
-
-As atualizações devem ser registradas por meio de commits descritivos.
-
-Exemplo:
-
-```bash
-git add .
-git commit -m "Descrição da alteração"
-git push origin main
+```text
+TCC/
+├── android/
+├── ios/
+├── lib/
+├── test/
+├── pubspec.yaml
+├── pubspec.lock
+└── README.md
 ```
 
-Arquivos temporários, diretórios de compilação e informações sensíveis não devem ser publicados no repositório.
+## Situação atual do projeto
 
-## 11. Segurança e privacidade
+**Estágio:** Protótipo funcional.
 
-A evolução da solução deverá considerar:
+O protótipo permite visualizar o mapa, cadastrar ocorrências georreferenciadas e consultar os registros armazenados localmente.
 
-- Proteção das informações dos usuários.
-- Controle de acesso aos recursos.
-- Validação dos dados enviados.
-- Proteção de informações de localização.
-- Tratamento de erros e falhas de comunicação.
-- Definição de políticas de privacidade e retenção de dados.
+Os testes técnicos realizados verificaram o cadastro, a visualização e a persistência local das ocorrências.
 
-## 12. Evolução do projeto
+O compartilhamento entre usuários e as notificações em tempo real permanecem como possibilidades de evolução.
 
-O desenvolvimento poderá seguir as seguintes etapas:
+## Trabalhos futuros
 
-| Etapa | Descrição | Situação |
-|---|---|---|
-| 1 | Estrutura inicial do aplicativo Flutter | Em desenvolvimento |
-| 2 | Construção das interfaces | Protótipo |
-| 3 | Integração com OpenStreetMap | A evoluir |
-| 4 | Implementação do registro de ocorrências | A validar |
-| 5 | Definição do backend | Pendente |
-| 6 | Persistência e compartilhamento de dados | Futuro |
-| 7 | Comunicação em tempo real | Futuro |
-| 8 | Notificações | Futuro |
-| 9 | Testes e validação | Futuro |
-| 10 | Documentação e entrega do TCC | Futuro |
+- Definir e implementar uma arquitetura de backend.
+- Desenvolver uma base de dados centralizada.
+- Permitir sincronização das ocorrências entre usuários.
+- Implementar notificações em tempo real.
+- Aprimorar os mecanismos de validação das ocorrências.
+- Realizar testes adicionais de usabilidade.
+- Avaliar a evolução da aplicação para uso em ambiente real.
 
-## 13. Considerações finais
+## Referências
 
-O projeto busca explorar o potencial das tecnologias móveis e dos mecanismos colaborativos para contribuir com a disseminação de informações relacionadas ao transporte público.
+- [Flutter – Documentação oficial](https://docs.flutter.dev/)
+- [Dart – Documentação oficial](https://dart.dev/docs)
+- [OpenStreetMap – Copyright e licença](https://www.openstreetmap.org/copyright)
+- [flutter_map – Pacote Flutter](https://pub.dev/packages/flutter_map)
+- [Geocoding – Pacote Flutter](https://pub.dev/packages/geocoding)
+- [Path Provider – Pacote Flutter](https://pub.dev/packages/path_provider)
 
-A proposta pretende oferecer uma ferramenta que permita aos passageiros compartilhar informações georreferenciadas sobre ocorrências, contribuindo para uma experiência de mobilidade urbana mais informada.
+## Repositório
 
-O desenvolvimento continuará evoluindo a partir da validação do protótipo, definição da arquitetura de backend e implementação das funcionalidades previstas.
+Código-fonte disponível em:
 
-## 14. Autor
+[GitHub – TCC](https://github.com/Guilh3rme67/TCC)
 
-**Guilherme Oliveira Freire**
+## Autoria
 
-GitHub: [@Guilh3rme67](https://github.com/Guilh3rme67)
+**Guilherme O. Freire**
 
-Repositório: [Sistema Colaborativo de Ocorrências no Transporte Público](https://github.com/Guilh3rme67/TCC)
+Centro Universitário Campo Limpo Paulista – UNIFACCAMP
 
----
-
-*Trabalho de Conclusão de Curso (TCC) — Projeto acadêmico em desenvolvimento.*
+Trabalho de Conclusão de Curso – 2026
